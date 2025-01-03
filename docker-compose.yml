@@ -1,0 +1,123 @@
+version: "3.9"
+
+services:
+  consumer:
+    image: ordered-consumer:latest
+    build:
+      context: .
+      dockerfile: consumer.Dockerfile
+    environment:
+      - QUEUE_NAMES=${RABBITMQ_QUEUE}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - INSTANCE_INDEX=0
+    depends_on:
+       rabbitmq:
+         condition: service_healthy
+       producer:
+         condition: service_started
+
+  consumer1:
+    image: ordered-consumer:latest
+    build:
+      context: .
+      dockerfile: consumer.Dockerfile
+    environment:
+      - QUEUE_NAMES=${RABBITMQ_QUEUE}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - INSTANCE_INDEX=1
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      producer:
+        condition: service_started
+
+  consumer2:
+    image: ordered-consumer:latest
+    build:
+      context: .
+      dockerfile: consumer.Dockerfile
+    environment:
+      - QUEUE_NAMES=${RABBITMQ_QUEUE}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - INSTANCE_INDEX=2
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      producer:
+        condition: service_started
+
+  consumer3:
+    image: ordered-consumer:latest
+    build:
+      context: .
+      dockerfile: consumer.Dockerfile
+    environment:
+      - QUEUE_NAMES=${RABBITMQ_QUEUE}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - INSTANCE_INDEX=3
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      producer:
+        condition: service_started
+
+  consumer4:
+    image: ordered-consumer:latest
+    build:
+      context: .
+      dockerfile: consumer.Dockerfile
+    environment:
+      - QUEUE_NAMES=${RABBITMQ_QUEUE}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - INSTANCE_INDEX=4
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      producer:
+        condition: service_started
+
+
+  consumer5:
+    image: ordered-consumer:latest
+    build:
+      context: .
+      dockerfile: consumer.Dockerfile
+    environment:
+      - QUEUE_NAMES=${RABBITMQ_QUEUE}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - INSTANCE_INDEX=5
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      producer:
+        condition: service_started
+
+  producer:
+    image: ordered-producer:latest
+    build:
+      context: .
+      dockerfile: producer.Dockerfile
+    environment:
+      - QUEUE_NAMES=${RABBITMQ_QUEUE}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - INSTANCE_INDEX=21
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+
+  rabbitmq:
+    image: registry.snappfood.ir/devops/generic/rabbitmq:3.7
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672" # RabbitMQ port for messaging
+      - "15672:15672" # RabbitMQ management interface
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "status" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
